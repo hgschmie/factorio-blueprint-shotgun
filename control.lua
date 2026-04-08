@@ -151,7 +151,7 @@ script.on_event(e.on_script_trigger_effect, function(event)
     local character_radius = character.get_radius()
     local radius = 15 + character_radius
 
---     render.debug_circle({g = 0.15, a = 0.15}, radius, surface, character)
+    -- render.debug_circle({g = 0.15, a = 0.15}, radius, surface, character)
     -- render.debug_circle({g = 0.15, b = 0.15, a = 0.15}, radius + 3.5, surface, character)
 
     local data = utils.get_character_data(character)

@@ -1,4 +1,11 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.2.19
+Date: 2026-04-08
+  Bugfixes:
+    - Fixed exploit with upgrading ghost after shooting item to get a free upgrade
+  Compatibility:
+    - Altered recipe for Bob's Electronics
+---------------------------------------------------------------------------------------------------
 Version: 0.2.18
 Date: 2026-02-06
   Bugfixes:

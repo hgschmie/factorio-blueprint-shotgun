@@ -70,21 +70,35 @@ function lib.process(params)
 end
 
 ---@param item FlyingBuildItem
-function lib.action(item)
+local function try_revive(item)
     local target_entity = item.target_entity --[[@as LuaEntity]]
-    if target_entity.valid then
-        local success, entity = target_entity.revive() ---@cast entity LuaEntity
-        if success == nil then
-            utils.spill_item(item)
-        else
-            entity.health = item.slot[1].health * entity.prototype.get_max_health(entity.quality)
+    if not target_entity.valid then return end
 
-            local stats = entity.force.get_entity_build_count_statistics(entity.surface)
-            stats.on_flow(entity, 1)
-
-            script.raise_script_revive{entity = entity}
+    local item_name = item.slot[1].name
+    for _, place in pairs(target_entity.ghost_prototype.items_to_place_this) do
+        if place.name == item_name then
+            goto forelse
         end
-    else
+    end
+    do return end
+    ::forelse::
+
+    local success, entity = target_entity.revive() ---@cast entity LuaEntity
+    if success == nil then return end
+
+    entity.health = item.slot[1].health * entity.prototype.get_max_health(entity.quality)
+
+    local stats = entity.force.get_entity_build_count_statistics(entity.surface)
+    stats.on_flow(entity, 1)
+
+    script.raise_script_revive{entity = entity}
+
+    return true
+end
+
+---@param item FlyingBuildItem
+function lib.action(item)
+    if not try_revive(item) then
         utils.spill_item(item)
     end
     storage.to_build[item.unit_number] = nil

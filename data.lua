@@ -277,5 +277,6 @@ if settings.startup["blueprint-shotgun-no-wood"].value then
     }
 end
 
-require("compatibility/ultracube")
+require("compatibility/bobelectronics")
 require("compatibility/PlanetsLib")
+require("compatibility/Ultracube")
