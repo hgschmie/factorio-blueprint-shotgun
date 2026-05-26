@@ -57,7 +57,7 @@ data:extend{{
         {type = "item", name = "iron-gear-wheel", amount = 10},
     },
     enabled = false,
-    subgroup = "tool",
+    -- subgroup = "tool",
 }, {
     type = "recipe",
     name = "item-canister",
@@ -68,7 +68,7 @@ data:extend{{
         {type = "item", name = "iron-stick", amount = 3},
     },
     enabled = false,
-    subgroup = "tool",
+    -- subgroup = "tool",
 }} --[[@as data.RecipePrototype[] ]]
 
 data:extend{{
@@ -277,6 +277,7 @@ if settings.startup["blueprint-shotgun-no-wood"].value then
     }
 end
 
+require("compatibility/AmmoGroup")
 require("compatibility/bobelectronics")
 require("compatibility/PlanetsLib")
 require("compatibility/Ultracube")

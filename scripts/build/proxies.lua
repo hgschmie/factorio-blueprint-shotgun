@@ -24,28 +24,11 @@ function lib.process(params)
     for _, proxy in pairs(proxies) do
         local target = proxy.proxy_target
         if not target then return end
-
         if target.to_be_upgraded() then goto continue end
-
-        local to_insert = storage.to_insert[proxy.unit_number] or {} --[[@as ItemWithQualityCounts ]]
-        storage.to_insert[proxy.unit_number] = to_insert
-
-        local requests = proxy.item_requests
-
-        --* removed since requests are subtracted from down below
-        -- local map = utils.map_item_count_quality(requests)
-        -- for _, data in pairs(to_insert) do
-        --     local qualities = map[data.name]
-        --     if qualities then
-        --         local item_request = qualities[data.quality]
-        --         if item_request then
-        --             item_request.count = item_request.count - data.count
-        --         end
-        --     end
-        -- end
 
         ---@type ItemWithQualityCount?, LuaItemStack, uint
         local item, stack, count
+        local requests = proxy.item_requests
         local inventory = params.inventory
         for _, request in pairs(requests) do
             local min_count = math.min(inventory.get_item_count{name = request.name, quality = request.quality}, request.count)

@@ -163,18 +163,6 @@ function utils.spill_products(surface, position, prototype, force)
     end
 end
 
----@param items ItemWithQualityCounts
----@return table<string, table<QualityID, ItemWithQualityCount>>
-function utils.map_item_count_quality(items)
-    local ret = {}
-    for _, item in pairs(items) do
-        local item_counts = ret[item.name] or {}
-        ret[item.name] = item_counts
-        item_counts[item.quality] = item
-    end
-    return ret
-end
-
 ---@param surface LuaSurface
 ---@return LuaEntity
 function utils.temp_character(surface, force)

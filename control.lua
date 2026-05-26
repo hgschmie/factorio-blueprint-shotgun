@@ -36,8 +36,6 @@ local function setup_globals()
     storage.to_build = storage.to_build or {}
     ---@type table<uint, true>
     storage.to_upgrade = storage.to_upgrade or {}
-    ---@type ItemWithQualityCounts[]
-    storage.to_insert = storage.to_insert or {}
     ---@type table<uint, BlueprintShotgun.MiningData>
     storage.to_mine = storage.to_mine or {}
     ---@type table<uint, true>
@@ -319,7 +317,6 @@ script.on_event(e.on_surface_deleted, function(event)
         local entity = item.target_entity
         if not entity then goto continue end
         storage.to_build[item.unit_number] = nil
-        storage.to_insert[item.unit_number] = nil
         storage.to_upgrade[item.unit_number] = nil
 
         ::continue::

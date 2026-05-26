@@ -19,8 +19,9 @@ data.raw.technology["blueprint-shotgun-upgrade-2"].prerequisites[2] = "cube-fund
 table.remove(data.raw.technology["blueprint-shotgun"].effects, 3)
 
 
+data.raw.gun["blueprint-shotgun"].subgroup = "cube-repair"
 local gun = data.raw.recipe["blueprint-shotgun"]
-gun.subgroup = "cube-repair"
+gun.additional_categories = {"cube-fabricator-handcraft"}
 gun.ingredients = {
     {type = "item", name = "cube-ultradense-utility-cube", amount = 1},
     {type = "item", name = "cube-electronic-circuit", amount = 5},
@@ -29,8 +30,9 @@ gun.ingredients = {
 table.insert(gun.results, 1, {type = "item", name = "cube-ultradense-utility-cube", amount = 1})
 gun.main_product = "blueprint-shotgun"
 
+data.raw.ammo["item-canister"].subgroup = "cube-repair"
 local canister = data.raw.recipe["item-canister"]
-canister.subgroup = "cube-repair"
+canister.additional_categories = {"cube-fabricator-handcraft"}
 canister.ingredients = {
     {type = "item", name = "cube-basic-motor-unit", amount = 1},
     {type = "item", name = "cube-basic-matter-unit", amount = 4},
