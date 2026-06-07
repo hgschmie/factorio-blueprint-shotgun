@@ -79,113 +79,14 @@ end
 ---@param item FlyingUpgradeItem
 local function upgrade(item)
     local entity = item.target_entity --[[@as LuaEntity]]
-    if not entity.valid then return end
-    local target = entity.get_upgrade_target()
-    if not target then return end
+    if not (entity.valid and entity.to_be_upgraded) then return end
 
-    ---@type {contents: DetailedItemOnLine[], inventory: LuaInventory}[]?
-    local lines
-    local connection = item.connection
-    if connection and connection.valid then
-        lines = {}
-        local output = entity.belt_to_ground_type == "input" and entity or item.connection --[[@as LuaEntity]]
-        for i = 1, 2 do
-            local line = output.get_transport_line(i + 2)
-            local contents = line.get_detailed_contents()
-            local inventory = game.create_inventory(#contents)
-            for j = #contents, 1, -1 do
-                inventory[j].transfer_stack(contents[j].stack)
-            end
-            lines[i] = {
-                contents = contents,
-                inventory = inventory,
-            }
-        end
-    end
+    local success = entity.apply_upgrade()
 
-    local surface = entity.surface
-    local force = entity.force
-    local position = entity.position
-    local etype = entity.type
-    local belt_to_ground_type = etype == "underground-belt" and entity.belt_to_ground_type or nil
-    local loader_type = (etype == "loader" or etype == "loader-1x1") and entity.loader_type or nil
-
-    local character = utils.temp_character(surface)
-    local success = surface.create_entity{
-        name = target.name,
-        position = position,
-        direction = entity.direction,
-        force = force,
-        fast_replace = true,
-        character = character,
-        create_build_effect_smoke = true,
-        raise_built = true,
-        type = belt_to_ground_type or loader_type,
-    }
-
-    if lines then
-        ---@cast connection -?
-        connection = surface.create_entity{
-            name = target.name,
-            position = connection.position,
-            direction = connection.direction,
-            force = force,
-            fast_replace = true,
-            character = character,
-            create_build_effect_smoke = true,
-            raise_built = true,
-            type = connection.belt_to_ground_type
-        }
-
-        if connection ~= success then
-            item.slot[1].count = item.slot[1].count / 2
-        end
-    end
-
-    if success then
-        surface.play_sound{path = "entity-build/" .. target.name, position = position}
-        local inventory = character.get_main_inventory() --[[@as LuaInventory]]
-        for i = 1, #inventory do
-            local stack = inventory[i]
-            if not stack.valid_for_read then break end
-            surface.spill_item_stack{
-                position = position,
-                stack = stack,
-                force = force,
-                allow_belts = false
-            }
-        end
-    end
-    character.destroy()
-
-    if lines then
-        if success and connection then
-            local output = success.belt_to_ground_type == "input" and success or connection --[[@as LuaEntity]]
-            for i = 1, 2 do
-                local line = lines[i]
-                local contents = line.contents
-                local inventory = line.inventory
-                local insert = output.get_transport_line(i + 2).force_insert_at
-                for j = 1, #inventory do
-                    insert(contents[j].position, inventory[j])
-                end
-            end
-        else
-            for i = 1, 2 do
-                local inventory = lines[i].inventory
-                for j = 1, #inventory do
-                    surface.spill_item_stack{
-                        position = position,
-                        stack = inventory[j],
-                        force = force,
-                        allow_belts = false
-                    }
-                end
-            end
-        end
-        for i = 1, 2 do
-            lines[i].inventory.destroy()
-        end
+    if not success then
+        if entity.valid then entity.cancel_upgrade(entity.force) end
+    else
+        success.surface.play_sound { path = 'entity-build/' .. success.name, position = success.position }
     end
 
     return success
